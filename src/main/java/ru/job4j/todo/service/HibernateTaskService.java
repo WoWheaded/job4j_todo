@@ -44,8 +44,8 @@ public class HibernateTaskService implements TaskService {
     }
 
     @Override
-    public boolean update(int id, Task task) {
-        return hibernateTaskRepository.update(id, task);
+    public boolean updateTask(int id, Task task) {
+        return hibernateTaskRepository.updateTask(id, task);
     }
 
     @Override

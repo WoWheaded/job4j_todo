@@ -102,7 +102,7 @@ public class HibernateTaskRepository implements TaskRepository {
     }
 
     @Override
-    public boolean update(int id, Task task) {
+    public boolean updateTask(int id, Task task) {
         boolean resultUpdate = false;
         Session session = sf.openSession();
         try {

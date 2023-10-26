@@ -71,7 +71,7 @@ public class TaskController {
 
     @PostMapping("/update")
     public String updateTask(@ModelAttribute Task task) {
-        hibernateTaskService.update(task.getId(), task);
+        hibernateTaskService.updateTask(task.getId(), task);
         return "redirect:/tasks";
     }
 
@@ -79,7 +79,7 @@ public class TaskController {
     public String setDoneStatusTask(@PathVariable int id) {
         var taskById = hibernateTaskService.findTaskById(id).get();
         taskById.setDone(true);
-        hibernateTaskService.update(id, taskById);
+        hibernateTaskService.updateTask(id, taskById);
         return "redirect:/tasks";
     }
 
