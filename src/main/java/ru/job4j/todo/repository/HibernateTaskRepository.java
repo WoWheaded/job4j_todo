@@ -57,7 +57,7 @@ public class HibernateTaskRepository implements TaskRepository {
         try {
             session.beginTransaction();
             allTask = session.createQuery(
-                    "FROM Task", Task.class).list();
+                    "FROM Task AS t ORDER BY t.id", Task.class).list();
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
@@ -68,52 +68,52 @@ public class HibernateTaskRepository implements TaskRepository {
     }
 
     @Override
-    public List<Task> findNewTask() {
-        List<Task> allDoneTask = new ArrayList<>();
+    public List<Task> findTaskByStatus(boolean status) {
+        List<Task> taskByStatus = new ArrayList<>();
         Session session = sf.openSession();
         try {
             session.beginTransaction();
-            allDoneTask = session.createQuery(
-                            "FROM Task WHERE done = false ", Task.class).list();
+            taskByStatus = session.createQuery(
+                            "FROM Task AS t WHERE done = :fDone ORDER BY t.id", Task.class)
+                    .setParameter("fDone", status)
+                    .list();
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
         } finally {
             session.close();
         }
-        return allDoneTask;
+        return taskByStatus;
     }
 
     @Override
-    public List<Task> findDoneTask() {
-        List<Task> allDoneTask = new ArrayList<>();
+    public boolean updateTask(Task task) {
+        boolean resultUpdate = false;
         Session session = sf.openSession();
         try {
             session.beginTransaction();
-            allDoneTask = session.createQuery(
-                    "FROM Task WHERE done = true", Task.class).list();
+            session.update(task);
             session.getTransaction().commit();
+            resultUpdate = true;
         } catch (Exception e) {
             session.getTransaction().rollback();
         } finally {
             session.close();
         }
-        return allDoneTask;
+        return resultUpdate;
     }
 
     @Override
-    public boolean updateTask(int id, Task task) {
+    public boolean updateTaskStatus(int id) {
         boolean resultUpdate = false;
         Session session = sf.openSession();
         try {
             session.beginTransaction();
             session.createQuery(
-                            "UPDATE Task SET title = :fTitle, description = :fDescription, done = :fDone "
-                                    + "WHERE id = :fId")
+                            "UPDATE Task as t SET t.done = :fDone WHERE t.id = :fId")
+                    .setParameter("fDone", true)
                     .setParameter("fId", id)
-                    .setParameter("fTitle", task.getTitle())
-                    .setParameter("fDescription", task.getDescription())
-                    .setParameter("fDone", task.isDone()).executeUpdate();
+                    .executeUpdate();
             session.getTransaction().commit();
             resultUpdate = true;
         } catch (Exception e) {

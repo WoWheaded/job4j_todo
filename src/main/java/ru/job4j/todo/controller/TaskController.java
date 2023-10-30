@@ -24,7 +24,6 @@ public class TaskController {
 
     @PostMapping("/create")
     public String createTask(@ModelAttribute Task task) {
-        task.setDone(false);
         hibernateTaskService.createTask(task);
         return "redirect:/tasks";
     }
@@ -33,7 +32,7 @@ public class TaskController {
     public String getTaskById(@PathVariable int id, Model model) {
         var taskById = hibernateTaskService.findTaskById(id);
         if (taskById.isEmpty()) {
-            model.addAttribute("message", "Задача с указанным идентификатором не найдена");
+            model.addAttribute("message", "Задача с идентификатором id: " + id + " не найдена");
             return "errors/404";
         }
         model.addAttribute("task", taskById.get());
@@ -48,13 +47,13 @@ public class TaskController {
 
     @GetMapping("/onlyNew")
     public String getNewTask(Model model) {
-        model.addAttribute("tasks", hibernateTaskService.findNewTask());
+        model.addAttribute("tasks", hibernateTaskService.findTaskByStatus(false));
         return "tasks/list";
     }
 
     @GetMapping("/onlyDone")
     public String getDoneTask(Model model) {
-        model.addAttribute("tasks", hibernateTaskService.findDoneTask());
+        model.addAttribute("tasks", hibernateTaskService.findTaskByStatus(true));
         return "tasks/list";
     }
 
@@ -62,7 +61,7 @@ public class TaskController {
     public String editTaskPage(@PathVariable int id, Model model) {
         var taskById = hibernateTaskService.findTaskById(id);
         if (taskById.isEmpty()) {
-            model.addAttribute("message", "Задача с указанным идентификатором не найдена");
+            model.addAttribute("message", "Задача с указанным идентификатором id: "  + id + "  не обновлена");
             return "errors/404";
         }
         model.addAttribute("task", taskById.get());
@@ -70,16 +69,22 @@ public class TaskController {
     }
 
     @PostMapping("/update")
-    public String updateTask(@ModelAttribute Task task) {
-        hibernateTaskService.updateTask(task.getId(), task);
+    public String updateTask(@ModelAttribute Task task, Model model) {
+        var isUpdated = hibernateTaskService.updateTask(task);
+        if (!isUpdated) {
+            model.addAttribute("message", "Задача с идентификатором id: " + task.getId() + " не обновлена");
+            return "errors/404";
+        }
         return "redirect:/tasks";
     }
 
     @GetMapping("/setDoneStatus/{id}")
-    public String setDoneStatusTask(@PathVariable int id) {
-        var taskById = hibernateTaskService.findTaskById(id).get();
-        taskById.setDone(true);
-        hibernateTaskService.updateTask(id, taskById);
+    public String setDoneStatusTask(@PathVariable int id, Model model) {
+        var taskById = hibernateTaskService.updateTaskStatus(id);
+        if (!taskById) {
+            model.addAttribute("message", "Задача с идентификатором id: " + id + " не обновлена");
+            return "errors/404";
+        }
         return "redirect:/tasks";
     }
 
@@ -87,7 +92,7 @@ public class TaskController {
     public String deleteTaskById(@PathVariable int id, Model model) {
         var isDeleted = hibernateTaskService.deleteTaskById(id);
         if (!isDeleted) {
-            model.addAttribute("message", "Задача с указанным идентификатором не найдена");
+            model.addAttribute("message", "Задача с идентификатором id: " + id + " не удалена");
             return "errors/404";
         }
         return "redirect:/tasks";

@@ -28,13 +28,13 @@
 3. Перейти по ссылке [http://localhost:8080/tasks](http://localhost:8080/tasks)
 
 ###  Страница списка задач
-![Screenshot](img/all_tasks.png)
+![](img/all_tasks.PNG)
 
 ### Страница задачи
-![Screenshot](img/one_task.png)
+![](img/one_task.PNG)
 
 ### Страница создания задачи
-![Screenshot](img/add_task.png)
+![](img/add_task.PNG)
 
 ### Страница редактирования задачи
-![Screenshot](img/edit_task.png)
+![](img/edit_task.PNG)

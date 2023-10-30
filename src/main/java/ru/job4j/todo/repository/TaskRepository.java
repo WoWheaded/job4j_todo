@@ -13,11 +13,11 @@ public interface TaskRepository {
 
     List<Task> findAllTask();
 
-    List<Task> findNewTask();
+    List<Task> findTaskByStatus(boolean status);
 
-    List<Task> findDoneTask();
+    boolean updateTask(Task task);
 
-    boolean updateTask(int id, Task task);
+    boolean updateTaskStatus(int id);
 
     boolean deleteTaskById(int id);
 }

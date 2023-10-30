@@ -34,18 +34,18 @@ public class HibernateTaskService implements TaskService {
     }
 
     @Override
-    public List<Task> findNewTask() {
-        return hibernateTaskRepository.findNewTask();
+    public List<Task> findTaskByStatus(boolean status) {
+        return hibernateTaskRepository.findTaskByStatus(status);
     }
 
     @Override
-    public List<Task> findDoneTask() {
-        return hibernateTaskRepository.findDoneTask();
+    public boolean updateTask(Task task) {
+        return hibernateTaskRepository.updateTask(task);
     }
 
     @Override
-    public boolean updateTask(int id, Task task) {
-        return hibernateTaskRepository.updateTask(id, task);
+    public boolean updateTaskStatus(int id) {
+        return hibernateTaskRepository.updateTaskStatus(id);
     }
 
     @Override
