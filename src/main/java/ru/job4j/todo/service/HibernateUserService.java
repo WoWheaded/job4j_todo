@@ -19,7 +19,7 @@ public class HibernateUserService implements UserService {
     }
 
     @Override
-    public User save(User user) {
+    public Optional<User> save(User user) {
         return hibernateUserRepository.save(user);
     }
 
