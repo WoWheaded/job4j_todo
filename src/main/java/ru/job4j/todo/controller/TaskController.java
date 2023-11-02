@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.todo.model.Task;
+import ru.job4j.todo.model.User;
 import ru.job4j.todo.service.HibernateTaskService;
 
 @Controller
@@ -23,7 +24,8 @@ public class TaskController {
     }
 
     @PostMapping("/create")
-    public String createTask(@ModelAttribute Task task) {
+    public String createTask(@ModelAttribute Task task, @SessionAttribute User user) {
+        task.setUser(user);
         hibernateTaskService.createTask(task);
         return "redirect:/tasks";
     }
@@ -61,7 +63,7 @@ public class TaskController {
     public String editTaskPage(@PathVariable int id, Model model) {
         var taskById = hibernateTaskService.findTaskById(id);
         if (taskById.isEmpty()) {
-            model.addAttribute("message", "Задача с указанным идентификатором id: "  + id + "  не обновлена");
+            model.addAttribute("message", "Задача с указанным идентификатором id: " + id + "  не обновлена");
             return "errors/404";
         }
         model.addAttribute("task", taskById.get());
@@ -69,7 +71,8 @@ public class TaskController {
     }
 
     @PostMapping("/update")
-    public String updateTask(@ModelAttribute Task task, Model model) {
+    public String updateTask(@ModelAttribute Task task, Model model, @SessionAttribute User user) {
+        task.setUser(user);
         var isUpdated = hibernateTaskService.updateTask(task);
         if (!isUpdated) {
             model.addAttribute("message", "Задача с идентификатором id: " + task.getId() + " не обновлена");

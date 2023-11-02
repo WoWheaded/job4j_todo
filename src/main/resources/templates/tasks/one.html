@@ -27,7 +27,8 @@
             </div>
             <div class="mb-3">
                 <label for="description" class="form-label"><b>Описание</b></label>
-                <text class="form-control" id="description" name="description" th:text="${task.description}" rows="25"></text>
+                <text class="form-control" id="description" name="description" th:text="${task.description}"
+                      rows="25"></text>
             </div>
             <div class="col-4">
                 <h4>Дата создания</h4>
@@ -37,11 +38,18 @@
                 <h4>Процесс</h4>
                 <text th:text="${task.done} ? 'Выполнено' : 'Новая'"></text>
             </div>
+            <div class="col-4">
+                <h4>Кто добавли задачу</h4>
+                <text th:text="${task.user.getName()}"></text>
+            </div>
 
             <div class="row my-4">
-                <div class="col-3"><a class="btn btn-success w-100" th:href="@{/tasks/setDoneStatus/{id}(id=${task.id})}">Задача выполнена</a></div>
-                <div class="col-3"><a class="btn btn-danger w-100" th:href="@{/tasks/delete/{id}(id=${task.id})}">Удалить задачу</a></div>
-                <div class="col-3"><a class="btn btn-light w-100" th:href="@{/tasks/edit/{id}(id=${task.id})}">Редактировать</a></div>
+                <div class="col-3"><a class="btn btn-success w-100"
+                                      th:href="@{/tasks/setDoneStatus/{id}(id=${task.id})}">Задача выполнена</a></div>
+                <div class="col-3"><a class="btn btn-danger w-100" th:href="@{/tasks/delete/{id}(id=${task.id})}">Удалить
+                    задачу</a></div>
+                <div class="col-3"><a class="btn btn-light w-100" th:href="@{/tasks/edit/{id}(id=${task.id})}">Редактировать</a>
+                </div>
                 <div class="col-3"><a class="btn btn-secondary w-100" th:href="@{/tasks}">Отмена</a></div>
             </div>
         </form>
