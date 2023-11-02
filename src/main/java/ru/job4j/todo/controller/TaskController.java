@@ -6,20 +6,24 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.todo.model.Task;
 import ru.job4j.todo.model.User;
+import ru.job4j.todo.repository.HibernatePriorityRepository;
 import ru.job4j.todo.service.HibernateTaskService;
 
 @Controller
 @RequestMapping("/tasks")
 public class TaskController {
     private final HibernateTaskService hibernateTaskService;
+    private final HibernatePriorityRepository hibernatePriorityRepository;
 
     @Autowired
-    public TaskController(HibernateTaskService hibernateTaskService) {
+    public TaskController(HibernateTaskService hibernateTaskService, HibernatePriorityRepository hibernatePriorityRepository) {
         this.hibernateTaskService = hibernateTaskService;
+        this.hibernatePriorityRepository = hibernatePriorityRepository;
     }
 
     @GetMapping("/create")
-    public String getCreateTaskPage() {
+    public String getCreateTaskPage(Model model) {
+        model.addAttribute("priorities", hibernatePriorityRepository.findAllPriority());
         return "tasks/create";
     }
 
@@ -32,6 +36,7 @@ public class TaskController {
 
     @GetMapping("/{id}")
     public String getTaskById(@PathVariable int id, Model model) {
+        model.addAttribute("priorities", hibernatePriorityRepository.findAllPriority());
         var taskById = hibernateTaskService.findTaskById(id);
         if (taskById.isEmpty()) {
             model.addAttribute("message", "Задача с идентификатором id: " + id + " не найдена");

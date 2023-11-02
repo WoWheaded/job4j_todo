@@ -27,19 +27,19 @@ public class HibernateTaskRepository implements TaskRepository {
     @Override
     public Optional<Task> findTaskById(int id) {
         return crudRepository.optional(
-                "FROM Task WHERE id = :fId", Task.class,
+                "FROM Task AS t JOIN FETCH t.priority WHERE t.id = :fId", Task.class,
                 Map.of("fId", id));
     }
 
     @Override
     public List<Task> findAllTask() {
-        return crudRepository.query("FROM Task AS t ORDER BY t.id", Task.class);
+        return crudRepository.query("FROM Task AS t JOIN FETCH t.priority ORDER BY t.id", Task.class);
     }
 
     @Override
     public List<Task> findTaskByStatus(boolean status) {
         return crudRepository.query(
-                "FROM Task AS t WHERE done = :fDone ORDER BY t.id", Task.class,
+                "FROM Task AS t JOIN FETCH t.priority WHERE done = :fDone ORDER BY t.id", Task.class,
                 Map.of("fDone", status));
     }
 
