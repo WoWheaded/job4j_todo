@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface PriorityService {
 
-    List<Priority> findAll();
+    List<Priority> findAllPriority();
 }

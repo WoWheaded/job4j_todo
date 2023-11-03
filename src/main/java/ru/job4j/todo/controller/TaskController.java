@@ -6,24 +6,24 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.todo.model.Task;
 import ru.job4j.todo.model.User;
-import ru.job4j.todo.repository.HibernatePriorityRepository;
+import ru.job4j.todo.service.HibernatePriorityService;
 import ru.job4j.todo.service.HibernateTaskService;
 
 @Controller
 @RequestMapping("/tasks")
 public class TaskController {
     private final HibernateTaskService hibernateTaskService;
-    private final HibernatePriorityRepository hibernatePriorityRepository;
+    private final HibernatePriorityService hibernatePriorityService;
 
     @Autowired
-    public TaskController(HibernateTaskService hibernateTaskService, HibernatePriorityRepository hibernatePriorityRepository) {
+    public TaskController(HibernateTaskService hibernateTaskService, HibernatePriorityService hibernatePriorityService) {
         this.hibernateTaskService = hibernateTaskService;
-        this.hibernatePriorityRepository = hibernatePriorityRepository;
+        this.hibernatePriorityService = hibernatePriorityService;
     }
 
     @GetMapping("/create")
     public String getCreateTaskPage(Model model) {
-        model.addAttribute("priorities", hibernatePriorityRepository.findAllPriority());
+        model.addAttribute("priorities", hibernatePriorityService.findAllPriority());
         return "tasks/create";
     }
 
@@ -36,12 +36,12 @@ public class TaskController {
 
     @GetMapping("/{id}")
     public String getTaskById(@PathVariable int id, Model model) {
-        model.addAttribute("priorities", hibernatePriorityRepository.findAllPriority());
         var taskById = hibernateTaskService.findTaskById(id);
         if (taskById.isEmpty()) {
             model.addAttribute("message", "Задача с идентификатором id: " + id + " не найдена");
             return "errors/404";
         }
+        model.addAttribute("priorities", hibernatePriorityService.findAllPriority());
         model.addAttribute("task", taskById.get());
         return "tasks/one";
     }
@@ -71,6 +71,7 @@ public class TaskController {
             model.addAttribute("message", "Задача с указанным идентификатором id: " + id + "  не обновлена");
             return "errors/404";
         }
+        model.addAttribute("priorities", hibernatePriorityService.findAllPriority());
         model.addAttribute("task", taskById.get());
         return "tasks/edit";
     }

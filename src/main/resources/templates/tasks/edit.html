@@ -37,6 +37,13 @@
                 <input type="checkbox" name="done" th:field="*{done}" class="form-check-input" id="done">
                 <label class="form-check-label" for="done">Выполнена</label>
             </div>
+            <div class="mb-3">
+                <label for="priority"><b>Приоритет</b></label>
+                <select class="form-control" id="priority" name="priority.id">
+                    <option th:each="priority : ${priorities}" th:value="${priority.id}" th:text="${priority.name}"
+                            th:field="*{priority.id}" th:selected="${priority.id==priority.name}"></option>
+                </select>
+            </div>
             <div class="mb-3 row">
                 <div class="col-6"></div>
                 <div class="col-6">

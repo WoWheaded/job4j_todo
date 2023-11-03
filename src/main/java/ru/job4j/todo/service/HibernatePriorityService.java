@@ -16,7 +16,7 @@ public class HibernatePriorityService implements PriorityService {
     }
 
     @Override
-    public List<Priority> findAll() {
+    public List<Priority> findAllPriority() {
         return hibernatePriorityRepository.findAllPriority();
     }
 }

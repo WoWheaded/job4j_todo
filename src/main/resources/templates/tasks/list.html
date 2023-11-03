@@ -31,8 +31,8 @@
                     <th scope="col-6">Название</th>
                     <th scope="col-6">Дата создания</th>
                     <th scope="col-6">Состояние</th>
-                    <th scope="col-6">Имя пользователя</th>
                     <th scope="col-6">Приоритет</th>
+                    <th scope="col-6">Имя пользователя</th>
 
                 </tr>
                 </thead>
@@ -43,8 +43,8 @@
                            th:href="@{/tasks/{taskId}(taskId=${task.id})}"></a></td>
                     <td th:text="${#temporals.format(task.created, 'dd.MM.yyyy HH:mm:ss')}"/>
                     <td th:text="${task.done} ? 'Выполнено' : 'Новая'"/>
-                    <td th:text="${task.user.getName()}"></td>
                     <td th:text="${task.priority.name}"></td>
+                    <td th:text="${task.user.getName()}"></td>
                 </tr>
                 </tbody>
             </table>
