@@ -46,6 +46,12 @@
                 <h4>Приоритет задачи</h4>
                 <text th:text="${task.priority.getName()}"></text>
             </div>
+            <div class="form-group">
+                <h4>Категория задачи</h4>
+                <li th:each="category : ${task.categories}">
+                    <span th:text="${category.name}"/>
+                </li>
+            </div>
 
             <div class="row my-4">
                 <div class="col-3"><a class="btn btn-success w-100"

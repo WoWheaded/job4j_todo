@@ -33,7 +33,9 @@ public class HibernateTaskRepository implements TaskRepository {
 
     @Override
     public List<Task> findAllTask() {
-        return crudRepository.query("FROM Task AS t JOIN FETCH t.priority ORDER BY t.id", Task.class);
+        return crudRepository.query("Select distinct t FROM Task t JOIN FETCH t.priority "
+                        + "JOIN FETCH t.categories ORDER BY t.id",
+                Task.class);
     }
 
     @Override

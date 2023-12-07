@@ -1,5 +1,6 @@
 package ru.job4j.todo.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.job4j.todo.model.Priority;
 import ru.job4j.todo.repository.HibernatePriorityRepository;
@@ -11,6 +12,7 @@ public class HibernatePriorityService implements PriorityService {
 
     private final HibernatePriorityRepository hibernatePriorityRepository;
 
+    @Autowired
     public HibernatePriorityService(HibernatePriorityRepository hibernatePriorityRepository) {
         this.hibernatePriorityRepository = hibernatePriorityRepository;
     }

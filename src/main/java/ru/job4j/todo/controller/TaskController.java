@@ -6,30 +6,40 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.todo.model.Task;
 import ru.job4j.todo.model.User;
+import ru.job4j.todo.service.HibernateCategoryService;
 import ru.job4j.todo.service.HibernatePriorityService;
 import ru.job4j.todo.service.HibernateTaskService;
+
+import java.util.Set;
 
 @Controller
 @RequestMapping("/tasks")
 public class TaskController {
     private final HibernateTaskService hibernateTaskService;
     private final HibernatePriorityService hibernatePriorityService;
+    private final HibernateCategoryService hibernateCategoryService;
 
     @Autowired
-    public TaskController(HibernateTaskService hibernateTaskService, HibernatePriorityService hibernatePriorityService) {
+    public TaskController(HibernateTaskService hibernateTaskService, HibernatePriorityService hibernatePriorityService, HibernateCategoryService hibernateCategoryService) {
         this.hibernateTaskService = hibernateTaskService;
         this.hibernatePriorityService = hibernatePriorityService;
+        this.hibernateCategoryService = hibernateCategoryService;
     }
 
     @GetMapping("/create")
     public String getCreateTaskPage(Model model) {
         model.addAttribute("priorities", hibernatePriorityService.findAllPriority());
+        model.addAttribute("categories", hibernateCategoryService.getAllCategories());
         return "tasks/create";
     }
 
     @PostMapping("/create")
-    public String createTask(@ModelAttribute Task task, @SessionAttribute User user) {
+    public String createTask(@ModelAttribute Task task, @SessionAttribute User user,
+                             @RequestParam(required = false) Set<Integer> cIds) {
         task.setUser(user);
+        if (!cIds.isEmpty()) {
+            task.setCategories(hibernateCategoryService.findCategoriesById(cIds));
+        }
         hibernateTaskService.createTask(task);
         return "redirect:/tasks";
     }
@@ -73,12 +83,17 @@ public class TaskController {
         }
         model.addAttribute("priorities", hibernatePriorityService.findAllPriority());
         model.addAttribute("task", taskById.get());
+        model.addAttribute("categories", hibernateCategoryService.getAllCategories());
         return "tasks/edit";
     }
 
     @PostMapping("/update")
-    public String updateTask(@ModelAttribute Task task, Model model, @SessionAttribute User user) {
+    public String updateTask(@ModelAttribute Task task, Model model, @SessionAttribute User user,
+                             @RequestParam Set<Integer> cIds) {
         task.setUser(user);
+        if (!cIds.isEmpty()) {
+            task.setCategories(hibernateCategoryService.findCategoriesById(cIds));
+        }
         var isUpdated = hibernateTaskService.updateTask(task);
         if (!isUpdated) {
             model.addAttribute("message", "Задача с идентификатором id: " + task.getId() + " не обновлена");

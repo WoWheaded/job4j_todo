@@ -22,7 +22,8 @@
             <h2><b>Редактирование задания</b></h2>
             <div class="mb-3">
                 <label for="taskTitle" class="form-label"><b>Название задачи</b></label>
-                <textarea class="form-control" id="taskTitle" name="title" th:field="*{title}" placeholder="Название задачи" required></textarea>
+                <textarea class="form-control" id="taskTitle" name="title" th:field="*{title}"
+                          placeholder="Название задачи" required></textarea>
             </div>
             <div class="mb-3">
                 <label for="description" class="form-label"><b>Описание задачи</b></label>
@@ -44,12 +45,23 @@
                             th:field="*{priority.id}" th:selected="${priority.id==priority.name}"></option>
                 </select>
             </div>
+            <div class="form-group">
+                <label for="cIds" name="cIds"><b>Категория</b></label>
+                <select class="form-control" id="cIds" name="cIds" multiple>
+                    <option th:each="category: ${categories}"
+                            th:text="${category.name}"
+                            th:value="${category.id}"></option>
+                </select>
+            </div>
             <div class="mb-3 row">
                 <div class="col-6"></div>
                 <div class="col-6">
                     <div class="row">
-                        <div class="col-6"><button class="btn btn-primary w-100" type="submit">Сохранить</button></div>
-                        <div class="col-6"><a class="btn btn-danger w-100" th:href="@{/tasks/{taskId}(taskId=${task.id})}">Отмена</a>
+                        <div class="col-6">
+                            <button class="btn btn-primary w-100" type="submit">Сохранить</button>
+                        </div>
+                        <div class="col-6"><a class="btn btn-danger w-100"
+                                              th:href="@{/tasks/{taskId}(taskId=${task.id})}">Отмена</a>
                         </div>
                     </div>
                 </div>
