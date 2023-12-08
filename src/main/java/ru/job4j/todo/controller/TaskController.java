@@ -10,6 +10,8 @@ import ru.job4j.todo.service.HibernateCategoryService;
 import ru.job4j.todo.service.HibernatePriorityService;
 import ru.job4j.todo.service.HibernateTaskService;
 
+import java.time.ZoneId;
+import java.util.Collection;
 import java.util.Set;
 
 @Controller
@@ -57,20 +59,20 @@ public class TaskController {
     }
 
     @GetMapping()
-    public String getAllTask(Model model) {
-        model.addAttribute("tasks", hibernateTaskService.findAllTask());
+    public String getAllTask(Model model, @SessionAttribute User user) {
+        model.addAttribute("tasks", convertTimeWithTimezone(hibernateTaskService.findAllTask(), user));
         return "tasks/list";
     }
 
     @GetMapping("/onlyNew")
-    public String getNewTask(Model model) {
-        model.addAttribute("tasks", hibernateTaskService.findTaskByStatus(false));
+    public String getNewTask(Model model, @SessionAttribute User user) {
+        model.addAttribute("tasks", convertTimeWithTimezone(hibernateTaskService.findTaskByStatus(false), user));
         return "tasks/list";
     }
 
     @GetMapping("/onlyDone")
-    public String getDoneTask(Model model) {
-        model.addAttribute("tasks", hibernateTaskService.findTaskByStatus(true));
+    public String getDoneTask(Model model, @SessionAttribute User user) {
+        model.addAttribute("tasks", convertTimeWithTimezone(hibernateTaskService.findTaskByStatus(true), user));
         return "tasks/list";
     }
 
@@ -120,5 +122,14 @@ public class TaskController {
             return "errors/404";
         }
         return "redirect:/tasks";
+    }
+
+    private Collection<Task> convertTimeWithTimezone(Collection<Task> tasks, @SessionAttribute User user) {
+        for (Task task : tasks) {
+            task.setCreated(task.getCreated()
+                    .atZone(ZoneId.of("UTC"))
+                    .withZoneSameInstant(ZoneId.of(user.getTimezone().getID())).toLocalDateTime());
+        }
+        return tasks;
     }
 }
